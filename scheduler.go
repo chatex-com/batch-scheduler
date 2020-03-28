@@ -5,26 +5,26 @@ import (
 	"time"
 )
 
-type BatchScheduler struct {
+type Scheduler struct {
 	lock     sync.RWMutex
 	schedule Schedule
 	ch       chan interface{}
 }
 
-func NewBatchScheduler(cfg []Rule) (*BatchScheduler, error) {
+func NewScheduler(cfg []Rule) (*Scheduler, error) {
 	schedule, err := NewSchedule(cfg)
 	if err != nil {
 		return nil, err
 	}
 
-	scheduler := &BatchScheduler{
+	scheduler := &Scheduler{
 		schedule: *schedule,
 	}
 
 	return scheduler, nil
 }
 
-func (s *BatchScheduler) Run() <-chan interface{} {
+func (s *Scheduler) Run() <-chan interface{} {
 	s.lock.Lock()
 	defer s.lock.Unlock()
 
@@ -42,7 +42,7 @@ func (s *BatchScheduler) Run() <-chan interface{} {
 	return s.ch
 }
 
-func (s *BatchScheduler) Stop() {
+func (s *Scheduler) Stop() {
 	s.lock.Lock()
 	defer s.lock.Unlock()
 
@@ -50,7 +50,7 @@ func (s *BatchScheduler) Stop() {
 	s.ch = nil
 }
 
-func (s *BatchScheduler) run() {
+func (s *Scheduler) run() {
 	for {
 		s.lock.Lock()
 		s.ch <- true

@@ -9,15 +9,15 @@ import (
 
 func TestNewScheduler(t *testing.T) {
 	Convey("Create empty scheduler", t, func() {
-		scheduler, err := NewBatchScheduler(nil)
+		scheduler, err := NewScheduler(nil)
 
 		So(err, ShouldBeNil)
 		So(scheduler, ShouldNotBeNil)
-		So(scheduler, ShouldHaveSameTypeAs, &BatchScheduler{})
+		So(scheduler, ShouldHaveSameTypeAs, &Scheduler{})
 	})
 
 	Convey("Create simple config", t, func() {
-		scheduler, err := NewBatchScheduler([]Rule{
+		scheduler, err := NewScheduler([]Rule{
 			{StartedAt: "00:00", Window: 10 * time.Minute},
 			{StartedAt: "10:20", Window: 30 * time.Minute},
 			{StartedAt: "20:33", Window: time.Minute},
@@ -26,12 +26,12 @@ func TestNewScheduler(t *testing.T) {
 		So(err, ShouldBeNil)
 
 		So(scheduler, ShouldNotBeNil)
-		So(scheduler, ShouldHaveSameTypeAs, &BatchScheduler{})
+		So(scheduler, ShouldHaveSameTypeAs, &Scheduler{})
 		So(scheduler.schedule, ShouldHaveLength, 3)
 	})
 
 	Convey("Create with wrong config", t, func() {
-		scheduler, err := NewBatchScheduler([]Rule{
+		scheduler, err := NewScheduler([]Rule{
 			{StartedAt: "33:77", Window: time.Minute},
 		})
 
@@ -43,7 +43,7 @@ func TestNewScheduler(t *testing.T) {
 
 func TestScheduler_Run(t *testing.T) {
 	Convey("Test infinity run without config", t, func() {
-		scheduler, _ := NewBatchScheduler(nil)
+		scheduler, _ := NewScheduler(nil)
 
 		ch := scheduler.Run()
 
@@ -58,7 +58,7 @@ func TestScheduler_Run(t *testing.T) {
 	})
 
 	Convey("Test run with config", t, func() {
-		scheduler, _ := NewBatchScheduler([]Rule{
+		scheduler, _ := NewScheduler([]Rule{
 			{StartedAt: "00:00", Window: 100 * time.Millisecond},
 		})
 
@@ -77,7 +77,7 @@ func TestScheduler_Run(t *testing.T) {
 
 func TestScheduler_Stop(t *testing.T) {
 	Convey("Test stop with config", t, func() {
-		scheduler, _ := NewBatchScheduler([]Rule{
+		scheduler, _ := NewScheduler([]Rule{
 			{StartedAt: "00:00", Window: 20 * time.Millisecond},
 		})
 

@@ -46,7 +46,7 @@ func (s Schedule) GetWindow(t time.Time) time.Duration {
 	// find minutes from midnight for the next schedule rule
 	minutes := s[0].StartedAt
 	if (index + 1) < len(s) {
-		minutes = s[index + 1].StartedAt
+		minutes = s[index+1].StartedAt
 	}
 
 	// if the rule is based on the midnight (00:00) we should use next midnight for calculation
