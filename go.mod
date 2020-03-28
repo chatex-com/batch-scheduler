@@ -1,4 +1,4 @@
-module batch
+module github.com/chatex-com/batch-scheduler
 
 go 1.14
 
